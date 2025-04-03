@@ -1,0 +1,79 @@
+// Script para funcionalidades do site
+document.addEventListener('DOMContentLoaded', function() {
+    // Funcionalidade dos menus expansíveis
+    const sectionHeaders = document.querySelectorAll('.section-header');
+    
+    sectionHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const icon = this.querySelector('.toggle-icon');
+            
+            // Toggle da classe active para o conteúdo
+            content.classList.toggle('active');
+            
+            // Toggle da classe active para o ícone
+            icon.classList.toggle('active');
+        });
+    });
+    
+    // Botão de voltar ao topo
+    const backToTopButton = document.querySelector('.back-to-top');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('visible');
+        } else {
+            backToTopButton.classList.remove('visible');
+        }
+    });
+    
+    // Animação de fade-in para elementos
+    const fadeElements = document.querySelectorAll('.fade-in');
+    
+    const fadeInObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = 1;
+                entry.target.style.transform = 'translateY(0)';
+                fadeInObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    fadeElements.forEach(element => {
+        element.style.opacity = 0;
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+        fadeInObserver.observe(element);
+    });
+    
+    // Navegação suave para âncoras
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Abrir a primeira seção por padrão
+    if (sectionHeaders.length > 0) {
+        const firstContent = sectionHeaders[0].nextElementSibling;
+        const firstIcon = sectionHeaders[0].querySelector('.toggle-icon');
+        
+        firstContent.classList.add('active');
+        if (firstIcon) {
+            firstIcon.classList.add('active');
+        }
+    }
+});
